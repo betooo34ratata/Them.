@@ -12,7 +12,7 @@ Them. nu este doar o platformă de management al temelor, ci un partener academi
 
 Într-un sistem educațional aflat în plină digitalizare, am identificat nevoia unei soluții care să depășească simplul upload al fișierelor. Them. adresează trei piloni fundamentali:
 
-* Feedback Instant: Elevii primesc analize detaliate asupra greșelilor lor prin AI.
+* Feedback: Primirea de feedback de către profesori, în rezolvarea temelor.
 * Gamificare: Creșterea angajamentului prin puncte și clasamente.
 * Transparență: Acces rapid pentru directori și profesori la indicatori de performanță reali.
 
@@ -24,7 +24,7 @@ Them. nu este doar o platformă de management al temelor, ci un partener academi
 
 * Tablou General Personalizat: Vizualizarea progresului, a punctelor acumulate și a locului în clasament.
 * Sistem de Teme: Trimiterea temelor în format digital cu posibilitatea de a primi corecturi direct de la profesori.
-* AI Quizzes (Mini Teste): Generare instantanee de evaluări formative pe orice subiect, utilizând AI pentru a testa cunoștințele și a oferi Merit Points.
+* AI Quizzes (Mini Teste): Generare instantanee de evaluări formative pe orice subiect, utilizând AI pentru a testa cunoștințele și a oferi Merit Points.(Înca este in dezvoltare.)
 * Gamification: Un sistem de ierarhie bazat pe performanță academică ce încurajează competiția sănătoasă.
 * Portofoliu: Arhivă centralizată cu toate reușitele și activitățile.
 
@@ -73,9 +73,8 @@ Aplicația este deployată și poate fi accesată direct la: https://them-one.ve
 
 
 🛡️ Instrucțiuni pentru Juriu
-
+* Conectare: Se conecteaza creând un cont, email-ul trebuie sa aiba structura (nume@email.com) și se setează o parola.
 * Acces: Nu este necesară instalarea locală, aplicația este optimizată pentru web/mobile.
-* Explorare: Pentru a testa componenta de AI, accesați secțiunea AI Quizzes și generați un test pe orice subiect.
 * Rapoarte: Din contul de Director se pot genera rapoarte PDF de performanță academică.
 
 ---
