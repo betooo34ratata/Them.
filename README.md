@@ -78,8 +78,12 @@ Aplicația este deployată și poate fi accesată direct la: https://them-one.ve
 * Explorare: Pentru a testa componenta de AI, accesați secțiunea AI Quizzes și generați un test pe orice subiect.
 * Rapoarte: Din contul de Director se pot genera rapoarte PDF de performanță academică.
 
+  ---
+
 🏆 Infoeducație
 
 Acest proiect a fost dezvoltat special pentru concursul național de proiecte software Infoeducație, secțiunea Educațional. Prin Them., ne propunem să demonstrăm cum tehnologia emergentă (AI) poate fi integrată responsabil și util în mediul școlar românesc.
+
+---
 
 Creat cu ❤️ pentru viitorul educației.
