@@ -87,6 +87,7 @@ Acest proiect a fost dezvoltat special pentru concursul național de proiecte so
 ---
 📷 Screenshoturi
 
+<img width="1901" height="857" alt="image" src="https://github.com/user-attachments/assets/bb2744d0-8f2e-41e5-a17b-a1e176e9b7df" />
 <img width="1890" height="851" alt="image" src="https://github.com/user-attachments/assets/88767099-d850-49ea-bdb5-99f6b150f1b5" />
 <img width="1897" height="860" alt="image" src="https://github.com/user-attachments/assets/7f880510-766c-4d92-970e-ec015f1b2467" />
 <img width="1898" height="801" alt="image" src="https://github.com/user-attachments/assets/c5490eb2-4650-49a6-a0fc-bb591f783e6e" />
