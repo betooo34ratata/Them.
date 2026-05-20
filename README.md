@@ -78,7 +78,7 @@ Aplicația este deployată și poate fi accesată direct la: https://them-one.ve
 * Explorare: Pentru a testa componenta de AI, accesați secțiunea AI Quizzes și generați un test pe orice subiect.
 * Rapoarte: Din contul de Director se pot genera rapoarte PDF de performanță academică.
 
-  ---
+---
 
 🏆 Infoeducație
 
