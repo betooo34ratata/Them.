@@ -85,13 +85,12 @@ Aplicația este deployată și poate fi accesată direct la: https://them-one.ve
 Acest proiect a fost dezvoltat special pentru concursul național de proiecte software Infoeducație, secțiunea Educațional. Prin Them., ne propunem să demonstrăm cum tehnologia emergentă (AI) poate fi integrată responsabil și util în mediul școlar românesc.
 
 ---
-Screenshoturi
+📷 Screenshoturi
+
 <img width="1890" height="851" alt="image" src="https://github.com/user-attachments/assets/88767099-d850-49ea-bdb5-99f6b150f1b5" />
 <img width="1897" height="860" alt="image" src="https://github.com/user-attachments/assets/7f880510-766c-4d92-970e-ec015f1b2467" />
 <img width="1898" height="801" alt="image" src="https://github.com/user-attachments/assets/c5490eb2-4650-49a6-a0fc-bb591f783e6e" />
 <img width="1898" height="802" alt="image" src="https://github.com/user-attachments/assets/d7e878f6-8f5e-4e0d-bdab-f66390459294" />
-
-
 
 
 
