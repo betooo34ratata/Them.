@@ -1,0 +1,151 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function existingData() {
+      return resource.data;
+    }
+
+    function incomingData() {
+      return request.resource.data;
+    }
+
+    // 1. Users
+    match /users/{userId} {
+      allow get: if isSignedIn() && (
+        isOwner(userId) || 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director' ||
+        resource.data.schoolCode == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.schoolCode
+      );
+      allow list: if isSignedIn(); 
+      allow create: if isOwner(userId) && isValidId(userId);
+      allow update: if isOwner(userId) && (
+        incomingData().diff(existingData()).affectedKeys().hasOnly(['name', 'schoolCode', 'points', 'teacherSubject', 'role'])
+      );
+    }
+
+    // 2. Schools
+    match /schools/{schoolCode} {
+      allow get: if isSignedIn();
+      allow create: if isSignedIn();
+    }
+
+    // 3. Classes
+    match /classes/{classId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && (
+        resource.data.teacherId == request.auth.uid || 
+        request.auth.uid in resource.data.studentIds ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director' ||
+        (request.query.limit <= 1) 
+      );
+      allow create: if isSignedIn() && (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher' || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director') && isValidId(classId);
+      allow update: if isSignedIn() && (
+        existingData().teacherId == request.auth.uid || 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director' ||
+        (incomingData().diff(existingData()).affectedKeys().hasOnly(['studentIds']) && 
+         request.auth.uid in incomingData().studentIds && 
+         incomingData().studentIds.size() == existingData().studentIds.size() + 1)
+      );
+      allow delete: if isSignedIn() && (existingData().teacherId == request.auth.uid || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director');
+    }
+
+    // 4. Homeworks
+    match /homeworks/{homeworkId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn(); // Filtering should happen in query
+      allow create: if isSignedIn() && incomingData().teacherId == request.auth.uid;
+      allow update: if isSignedIn() && existingData().teacherId == request.auth.uid;
+      allow delete: if isSignedIn() && existingData().teacherId == request.auth.uid;
+    }
+
+    // 5. Submissions
+    match /submissions/{submissionId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && (
+        resource.data.studentId == request.auth.uid || 
+        (resource.data.hasAll(['homeworkId']) && resource.data.homeworkId != null && get(/databases/$(database)/documents/homeworks/$(resource.data.homeworkId)).data.teacherId == request.auth.uid)
+      );
+      allow create: if isSignedIn() && incomingData().studentId == request.auth.uid;
+      allow update: if isSignedIn() && (
+        (existingData().studentId == request.auth.uid && incomingData().diff(existingData()).affectedKeys().hasOnly(['content', 'createdAt', 'requirement', 'title', 'subject', 'aiFeedback', 'pointsAwarded', 'isCode'])) ||
+        (existingData().hasAll(['homeworkId']) && existingData().homeworkId != null && get(/databases/$(database)/documents/homeworks/$(existingData().homeworkId)).data.teacherId == request.auth.uid && incomingData().diff(existingData()).affectedKeys().hasOnly(['aiFeedback', 'pointsAwarded']))
+      );
+    }
+
+    // 6. Quizzes
+    match /quizzes/{quizId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn(); // Teachers or AI-trigger (client-side)
+      allow update, delete: if isSignedIn();
+    }
+
+    // 7. Announcements
+    match /announcements/{announcementId} {
+      allow list: if isSignedIn() && (
+        resource.data.schoolCode == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.schoolCode
+      );
+      allow get: if isSignedIn();
+      allow create: if isSignedIn() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher' || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director') && 
+        incomingData().schoolCode == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.schoolCode;
+      allow update, delete: if isSignedIn() && 
+        (existingData().authorId == request.auth.uid || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director');
+    }
+
+    // 8. Support Tickets
+    match /tickets/{ticketId} {
+      allow list: if isSignedIn() && (
+        resource.data.studentId == request.auth.uid ||
+        ((get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher' || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director') && 
+         resource.data.schoolCode == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.schoolCode)
+      );
+      allow get: if isSignedIn();
+      allow create: if isSignedIn() && incomingData().studentId == request.auth.uid;
+      allow update: if isSignedIn() && (
+        (existingData().studentId == request.auth.uid && incomingData().diff(existingData()).affectedKeys().hasOnly(['status'])) ||
+        ((get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher' || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director') && 
+         incomingData().diff(existingData()).affectedKeys().hasOnly(['answer', 'answeredBy', 'answeredByName', 'status']))
+      );
+      allow delete: if isSignedIn() && (existingData().studentId == request.auth.uid || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director');
+    }
+
+    // 9. Notifications
+    match /notifications/{notificationId} {
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn(); // Allow system or other users to notify
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid && incomingData().diff(existingData()).affectedKeys().hasOnly(['read']);
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // 10. Resources
+    match /resources/{resourceId} {
+      allow list: if isSignedIn() && (
+        resource.data.schoolCode == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.schoolCode
+      );
+      allow get: if isSignedIn();
+      allow create: if isSignedIn() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher' || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director');
+      allow update, delete: if isSignedIn() && 
+        (existingData().authorId == request.auth.uid || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'director');
+    }
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Represents a student or teacher in the system.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["student", "teacher"] },
+        "name": { "type": "string" },
+        "points": { "type": "integer" },
+        "schoolCode": { "type": "string" },
+        "teacherSubject": { "type": "string", "description": "Only for teachers" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role", "name"]
+    },
+    "School": {
+      "title": "School",
+      "description": "A school identified by a unique code.",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "name": { "type": "string" }
+      },
+      "required": ["code", "name"]
+    },
+    "Class": {
+      "title": "Class",
+      "description": "A class created by a teacher within a school.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "schoolCode": { "type": "string" },
+        "teacherId": { "type": "string" },
+        "subject": { "type": "string" },
+        "joinCode": { "type": "string" },
+        "studentIds": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["id", "name", "schoolCode", "teacherId", "subject", "joinCode"]
+    },
+    "Homework": {
+      "title": "Homework",
+      "description": "Assignment created by a teacher.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "classId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "subject": { "type": "string" },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "teacherId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "classId", "title", "teacherId", "subject"]
+    },
+    "Submission": {
+      "title": "Submission",
+      "description": "Homework submission by a student. Can be linked to a class homework or independent.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "homeworkId": { "type": "string", "description": "Optional if independent" },
+        "studentId": { "type": "string" },
+        "content": { "type": "string" },
+        "requirement": { "type": "string", "description": "The task or requirement for independent work" },
+        "title": { "type": "string", "description": "Title for independent work" },
+        "subject": { "type": "string" },
+        "aiFeedback": { "type": "string" },
+        "pointsAwarded": { "type": "integer" },
+        "isCode": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "studentId", "content"]
+    },
+    "Quiz": {
+      "title": "Quiz",
+      "description": "AI-generated or teacher-created quiz.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "classId": { "type": "string" },
+        "subject": { "type": "string" },
+        "title": { "type": "string" },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "question": { "type": "string" },
+              "options": { "type": "array", "items": { "type": "string" } },
+              "correctAnswer": { "type": "integer" }
+            }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "classId", "subject", "title", "questions"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "Information posted by teachers for the school.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "schoolCode": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "schoolCode", "authorId", "authorName", "title", "content"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "User notifications.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["info", "success", "warning"] },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "title", "message", "type", "read"]
+    },
+    "Resource": {
+      "title": "Resource",
+      "description": "Study materials per subject.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "schoolCode": { "type": "string" },
+        "subject": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "url": { "type": "string" },
+        "authorId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "schoolCode", "subject", "title", "url"]
+    },
+    "Ticket": {
+      "title": "Ticket",
+      "description": "A support ticket or question from a student to teachers.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "schoolCode": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "subject": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "status": { "type": "string", "enum": ["open", "closed"] },
+        "answer": { "type": "string" },
+        "answeredBy": { "type": "string" },
+        "answeredByName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "schoolCode", "studentId", "studentName", "subject", "title", "content", "status"]
+    }
+  },
+  "firestore": {
+    "/schools/{schoolId}": {
+      "schema": "School",
+      "description": "Authorized schools"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/classes/{classId}": {
+      "schema": "Class",
+      "description": "Class instances"
+    },
+    "/homeworks/{homeworkId}": {
+      "schema": "Homework",
+      "description": "Homework assignments"
+    },
+    "/submissions/{submissionId}": {
+      "schema": "Submission",
+      "description": "Student homework submissions"
+    },
+    "/quizzes/{quizId}": {
+      "schema": "Quiz",
+      "description": "Mini-quizzes"
+    },
+    "/announcements/{announcementId}": {
+      "schema": "Announcement",
+      "description": "School wide announcements"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "Individual notifications"
+    },
+    "/resources/{resourceId}": {
+      "schema": "Resource",
+      "description": "Subject based study resources"
+    },
+    "/tickets/{ticketId}": {
+      "schema": "Ticket",
+      "description": "Support tickets/questions"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Them.",
+  "description": "O platformă modernă pentru managementul temelor, organizată pe școli, cu analiză AI pentru corectarea greșelilor și un sistem de gamificare cu puncte.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
